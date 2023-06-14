@@ -1,23 +1,25 @@
 import matplotlib.pyplot as plt
 import time
+import sys
 
 # Number of points on the string
-number_of_points = 50
+number_of_points = 500
 
 # Point magnitude setup
 point_magnitudes_current  = [0.0] * number_of_points
-point_magnitudes_current[25] = 10
+point_magnitudes_current[0] = 10
 point_magnitudes_previous = point_magnitudes_current.copy()
+#point_magnitudes_current[0] = 1
 
 # Time setup
 time_current = 0
 timestep_current = 0
 timestep_length = 10
-timestep_max = 500
+timestep_max = 5000
 timestep_duration_seconds = 0.01
 
 # Multiplier on acceleration based on distance
-spring_multiplier = 0.1
+spring_multiplier = 0.5
 
 # Velocity is multiplied by this value before other calculations
 velocity_multiplier = 1
@@ -71,6 +73,10 @@ def iterate_timestep():
     point_magnitudes_previous = point_magnitudes_current.copy()
     point_magnitudes_current  = point_magnitudes_new.copy()
 
+# Function from ChatGPT to handle closing the program when the plot is closed
+def handle_close(evt):
+    sys.exit()
+
 # Function from ChatGPT to plot the values
 def plot_values(values):
     # Turn on interactive mode
@@ -80,7 +86,7 @@ def plot_values(values):
     x_values = range(len(values))
     
     # Create the plot
-    plt.scatter(x_values, values)
+    plt.plot(x_values, values)
     
     # Add title and labels
     plt.title("Waves :)")
@@ -98,11 +104,16 @@ def plot_values(values):
     # Clear the plot for the next update
     plt.cla()
 
+    # Connect the 'close_event' to the 'handle_close' function
+    plt.gcf().canvas.mpl_connect('close_event', handle_close)
 
 def main():
     while timestep_current <= timestep_max:
-        # rounded_display_magnitudes = [round(magnitude) for magnitude in point_magnitudes_current]
-        # print(timestep_current)
+        if -1 < timestep_current < 2:
+            point_magnitudes_current[0] = 10
+        else:
+            point_magnitudes_current[0] = 0
+
         plot_values(point_magnitudes_current)
         time.sleep(timestep_duration_seconds)
         iterate_timestep()
