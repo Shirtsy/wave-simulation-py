@@ -16,18 +16,19 @@ import time
 
 
 # Number of points on the string
-n = 30
+n = 100
 
 # Distance between each point
 dx = 0.5
 
 # Propagation speed
-c = 10
+c = 1
 
 
 
 # Initial values / vertical positions of the points
 pos = [0.0] * n
+pos[50] = 1
 
 # Previous values / positions
 pos_last = pos.copy()
@@ -44,7 +45,7 @@ dt = 0.5 * max_dt
 # Stiffness
 # Must be greater than or equal to 1 to function properly.
 # The formula is made up and likely not physically correct.
-stiffness = 10.0
+stiffness = 1.00
 
 # Time elapsed in the simulation world
 total_time = 0
@@ -97,7 +98,10 @@ def increment():
     # Go through the points and adjust the positions based on the
     # velocities that we calculated before
     for i in range(n):
-        pos[i] += vel[i] * dt
+        if i>0 and i<n-1:
+            pos[i] += vel[i] * dt
+        else:
+            pos[i] = 0
 
     # Use the backup we made before
     pos_last = temp
@@ -105,14 +109,14 @@ def increment():
     total_time += dt
     
     # Oscillate a specific point
-    osc_time = 3.0
-    if (total_time < osc_time):
-        strength = 1.0 - (total_time / osc_time)
+    #osc_time = 1.0
+    #if (total_time < osc_time):
+    #    strength = 1.0 - (total_time / osc_time)
         
-        amp = 0.3 * strength
-        freq = 40 * strength
+    #    amp = 0.3 * strength
+    #    freq = 40 * strength
         
-        pos[10] = math.sin(total_time * freq) * amp
+    #    pos[150] = math.sin(total_time * freq) * amp
 
 
 
